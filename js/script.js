@@ -1,3 +1,5 @@
+// require("dotenv").config();
+
 const globalVariables = {
   currentPage: window.location.pathname,
 };
@@ -220,6 +222,7 @@ async function displayMovieDetails() {
 }
 
 // Display Show Details
+// Display Show Details
 async function displayShowDetails() {
   const showId = window.location.search.split("=")[1];
 
@@ -311,6 +314,54 @@ function displayBackgroundImage(type, backgroundPath) {
   }
 }
 
+// Display Slider Movies
+async function displaySliderMovies() {
+  const { results } = await fetchAPIData("movie/now_playing");
+
+  results.forEach((movie) => {
+    const div = document.createElement("div");
+    div.classList.add("swiper-slide");
+
+    div.innerHTML = `
+      <a href="movie-details.html?id=${movie.id}">
+        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
+      </a>
+      <h4 class="swiper-rating">
+        <i class="fas fa-star text-secondary"></i> ${movie.vote_average} / 10
+      </h4>
+    `;
+
+    document.querySelector(".swiper-wrapper").appendChild(div);
+  });
+
+  initSwiper();
+}
+
+// Init Swiper
+function initSwiper() {
+  const swiper = new Swiper(".swiper", {
+    slidesPerView: 1,
+    spaceBetween: 30,
+    freeMode: true,
+    loop: true,
+    autoplay: {
+      delay: 4000,
+      disableOnInteraction: false,
+    },
+    breakpoints: {
+      500: {
+        slidesPerView: 2,
+      },
+      700: {
+        slidesPerView: 3,
+      },
+      1200: {
+        slidesPerView: 4,
+      },
+    },
+  });
+}
+
 // Fetch data from TMDB API
 async function fetchAPIData(endpoint) {
   const API_KEY = "fd68445faa245e765670e81f6899bcec";
@@ -332,6 +383,7 @@ async function fetchAPIData(endpoint) {
 function showSpinner() {
   document.querySelector(".spinner").classList.add("show");
 }
+
 function hideSpinner() {
   document.querySelector(".spinner").classList.remove("show");
 }
@@ -346,24 +398,13 @@ function highlightActiveLink() {
   });
 }
 
-function addCommasToNumber(number) {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-function changeTextColor() {
-  const logo = document.querySelector(".logo");
-  if (!logo.classList.contains("awesome")) {
-    logo.classList.add("awesome");
-    console.log(logo.classList);
-  }
-}
 // Init App
 function init() {
   switch (globalVariables.currentPage) {
     case "/":
-    case "index.html":
+    case "/index.html":
+      displaySliderMovies();
       displayPopularMovies();
-      changeTextColor();
       break;
     case "/shows.html":
       displayPopularShows();
