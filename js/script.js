@@ -350,12 +350,20 @@ function addCommasToNumber(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function changeTextColor() {
+  const logo = document.querySelector(".logo");
+  if (!logo.classList.contains("awesome")) {
+    logo.classList.add("awesome");
+    console.log(logo.classList);
+  }
+}
 // Init App
 function init() {
   switch (globalVariables.currentPage) {
     case "/":
     case "index.html":
       displayPopularMovies();
+      changeTextColor();
       break;
     case "/shows.html":
       displayPopularShows();
